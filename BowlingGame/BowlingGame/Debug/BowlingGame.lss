@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm Sun Apr 23 14:16:51 2023
+AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm Sun Apr 23 14:49:46 2023
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328Pdef.inc'
@@ -1001,7 +1001,9 @@ AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\Schoo
                                  .equ	BowlingBallPin	= PIND
                                  .equ BowlingBallData = DDRD
                                  .equ BowlingBallStart = PD3
+                                 .equ BowlingBallMid = PD4
                                  .equ BowlingBallEnd = PD5
+                                 .equ BowlingBallMsk = (1<<PD3)|(1<<PD4)|(1<<PD5)
                                  
                                  .equ	BowlPinData = DDRB
                                  .equ	BowlPinPin = PINB
@@ -1054,18 +1056,43 @@ AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\Schoo
 000049 9478                      	sei					; Enable global interupts.
                                  
                                  main_loop:
-                                 	; Bowling ball leds = [PD3, PD4, PD5]
-00004a 940e 0050                 	call	update_ball_position
+00004a 940e 005e                 	call	update_ball_position
                                  
 00004c cffd                      	rjmp main_loop
                                  
                                  
                                  
                                  shoot_ball:
-00004d 940e 0070                 	call wait_1_sec
+00004d 940e 007e                 	call wait_1_sec
+00004f b159                      	in	r21, BowlingBallPin		; For manipulation later.
+                                 
+                                 	; Update bowling pins.
+000050 994c                      	sbic	BowlingBallPin, BowlingBallMid	; Skip if second position is not set.
+000051 c006                      	rjmp	clear_all
+                                 
+000052 9b4d                      	sbis	BowlingBallPin, BowlingBallEnd	; Skip if last position is not set.
+000053 c002                      	rjmp	clear_right
+                                 
+                                 clear_left:
+000054 982c                      	cbi	BowlPinPort, BowlPinLeft			; Clear left pin
+                                 
+000055 c005                      	rjmp	shoot_ball_ret
+                                 
+                                 clear_right:
+000056 982d                      	cbi	BowlPinPort, BowlPinRight		; Clear right pin
+                                 
+000057 c003                      	rjmp shoot_ball_ret
+                                 
+                                 clear_all:
+000058 982c                      	cbi	BowlPinPort, BowlPinLeft			; Clear left pin
+000059 982d                      	cbi	BowlPinPort, BowlPinRight		; Clear right pin
+00005a 982b                      	cbi	BowlPinPort, BowlPinMid			; Clear middle pin
+                                 
+                                 
                                  
                                  shoot_ball_ret:
-00004f 9518                      	reti
+00005b 940e 007e                 	call	wait_1_sec
+00005d 9518                      	reti
                                  
                                  
                                  
@@ -1074,71 +1101,76 @@ AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\Schoo
                                  
                                  update_ball_position:
                                  	; Init timer delay.
-000050 ee47                      	ldi	r20, 0xE7				; For 100ms timer.
-000051 9340 0085                 	sts	TCNT1H, r20
-000053 e946                      	ldi	r20, 0x96				; For 100ms timer.
-000054 9340 0084                 	sts	TCNT1L, r20
+00005e ee47                      	ldi	r20, 0xE7				; For 100ms timer.
+00005f 9340 0085                 	sts	TCNT1H, r20
+000061 e946                      	ldi	r20, 0x96				; For 100ms timer.
+000062 9340 0084                 	sts	TCNT1L, r20
                                  
                                  	; Set normal mode
-000056 e040                      	ldi	r20, 0
-000057 9340 0080                 	sts	TCCR1A, r20
+000064 e040                      	ldi	r20, 0
+000065 9340 0080                 	sts	TCCR1A, r20
                                  
                                  	; Set clock select: 256 prescaler
-000059 e044                      	ldi	r20, 0x04
-00005a 9340 0081                 	sts	TCCR1B, r20
+000067 e044                      	ldi	r20, 0x04
+000068 9340 0081                 	sts	TCCR1B, r20
                                  
                                  update_ball_position_timer_loop:
-00005c 9bb0                      	sbis	tifr1, tov1			; Check if overflow flag set.
-00005d cffe                      	rjmp	update_ball_position_timer_loop
+00006a 9bb0                      	sbis	tifr1, tov1			; Check if overflow flag set.
+00006b cffe                      	rjmp	update_ball_position_timer_loop
                                  
-00005e 2744                      	clr	r20
-00005f 9340 0081                 	sts	tccr1b, r20			; Stop timer
-000061 9ab0                      	sbi	tifr1, tov1			; Clear flag.
+00006c 2744                      	clr	r20
+00006d 9340 0081                 	sts	tccr1b, r20			; Stop timer
+00006f 9ab0                      	sbi	tifr1, tov1			; Clear flag.
                                  
-000062 b109                      	in	r16, BowlingBallPin		; Read in what leds are on.
-000063 7308                      	andi	r16, (1<<PD3)|(1<<PD4)|(1<<PD5)		; Mask for led registers.
+000070 b109                      	in	r16, BowlingBallPin		; Read in what leds are on.
+000071 7308                      	andi	r16, BowlingBallMsk		; Mask for led registers.
                                  
-000064 0f00                      	lsl	r16					; Move to next led. (shifts bits to the left)
-000065 e210                      	ldi	r17, (1<<BowlingBallEnd)	; Register of last led.
-000066 0f11                      	lsl	r17					; Register after last led.
+000072 0f00                      	lsl	r16					; Move to next led. (shifts bits to the left)
+000073 e210                      	ldi	r17, (1<<BowlingBallEnd)	; Register of last led.
+000074 0f11                      	lsl	r17					; Register after last led.
                                  
-000067 1701                      	cp	r16, r17				; Check if equal.
+000075 1701                      	cp	r16, r17				; Check if equal.
                                  
-000068 f421                      	brne	reset_count_skip
+000076 f421                      	brne	reset_count_skip
                                  
                                  reset_count:
-000069 e008                      	ldi	r16, (1<<BowlingBallStart)
-00006a 6004                      	ori	r16, (1<<ButtonPin)		; To not overwrite the pullup mode.
-00006b b90b                      	out	BowlingBallPort, r16	; Restart led position.
-00006c c002                      	rjmp	update_ball_position_ret
+000077 e008                      	ldi	r16, (1<<BowlingBallStart)
+000078 6004                      	ori	r16, (1<<ButtonPin)		; To not overwrite the pullup mode.
+000079 b90b                      	out	BowlingBallPort, r16	; Restart led position.
+00007a c002                      	rjmp	update_ball_position_ret
                                  
                                  reset_count_skip:
-00006d 6004                      	ori	r16, (1<<ButtonPin)		; To not overwrite the pullup mode.
-00006e b90b                      	out	BowlingBallPort, r16	; Update led.
+00007b 6004                      	ori	r16, (1<<ButtonPin)		; To not overwrite the pullup mode.
+00007c b90b                      	out	BowlingBallPort, r16	; Update led.
                                  
                                  update_ball_position_ret:
-00006f 9508                      	ret						; Update_ball_position.
+00007d 9508                      	ret						; Update_ball_position.
                                  
                                  
                                  wait_1_sec:
+                                 	; Clear old timer
+00007e 2744                      	clr	r20
+00007f 9340 0081                 	sts	tccr1b, r20			; Stop timer
+000081 9ab0                      	sbi	tifr1, tov1			; Clear flag.
+                                 
                                  	; Init timer delay.
-000070 e04b                      	ldi	r20, 0x0B				; For 1000ms timer.
-000071 9340 0085                 	sts	TCNT1H, r20
-000073 ed4c                      	ldi	r20, 0xDC				; For 1000ms timer.
-000074 9340 0084                 	sts	TCNT1L, r20
+000082 e04b                      	ldi	r20, 0x0B				; For 1000ms timer.
+000083 9340 0085                 	sts	TCNT1H, r20
+000085 ed4c                      	ldi	r20, 0xDC				; For 1000ms timer.
+000086 9340 0084                 	sts	TCNT1L, r20
                                  
                                  	; Set normal mode
-000076 e040                      	ldi	r20, 0
-000077 9340 0080                 	sts	TCCR1A, r20
+000088 e040                      	ldi	r20, 0
+000089 9340 0080                 	sts	TCCR1A, r20
                                  
                                  	; Set clock select: 256 prescaler
-000079 e044                      	ldi	r20, 0x04
-00007a 9340 0081                 	sts	TCCR1B, r20
+00008b e044                      	ldi	r20, 0x04
+00008c 9340 0081                 	sts	TCCR1B, r20
                                  	
                                  
                                  wait_1_sec_loop:
-00007c 9bb0                      	sbis	tifr1, tov1			; Check if overflow flag set.
-00007d cffe                      	rjmp	wait_1_sec_loop
+00008e 9bb0                      	sbis	tifr1, tov1			; Check if overflow flag set.
+00008f cffe                      	rjmp	wait_1_sec_loop
 
 
 RESOURCE USE INFORMATION
@@ -1158,10 +1190,10 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  17 r17:   3 r18:   0 r19:   0 r20:  18 
-r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  17 r17:   3 r18:   0 r19:   0 r20:  20 
+r21:   1 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 3 out of 35 (8.6%)
+Registers used: 4 out of 35 (11.4%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
@@ -1169,26 +1201,26 @@ andi  :   1 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   1 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   2 cbi   :   1 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   3 cbi   :   6 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   2 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   0 jmp   :   2 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   2 inc   :   0 jmp   :   2 
 ld    :   0 ldd   :   0 ldi   :  14 lds   :   0 lpm   :   0 lsl   :   2 
 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   0 or    :   0 ori   :   2 out   :   5 pop   :   0 
-push  :   0 rcall :   0 ret   :   2 reti  :   1 rjmp  :   4 rol   :   0 
-ror   :   0 sbc   :   0 sbci  :   0 sbi   :  12 sbic  :   0 sbis  :   2 
+push  :   0 rcall :   0 ret   :   2 reti  :   1 rjmp  :   8 rol   :   0 
+ror   :   0 sbc   :   0 sbci  :   0 sbi   :  13 sbic  :   1 sbis  :   3 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :  10 
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :  11 
 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 19 out of 113 (16.8%)
+Instructions used: 20 out of 113 (17.7%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0000fe    158      0    158   32768   0.5%
+[.cseg] 0x000000 0x000122    194      0    194   32768   0.6%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

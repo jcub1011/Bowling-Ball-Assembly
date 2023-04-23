@@ -15,7 +15,9 @@
 .equ	BowlingBallPin	= PIND
 .equ BowlingBallData = DDRD
 .equ BowlingBallStart = PD3
+.equ BowlingBallMid = PD4
 .equ BowlingBallEnd = PD5
+.equ BowlingBallMsk = (1<<PD3)|(1<<PD4)|(1<<PD5)
 
 .equ	BowlPinData = DDRB
 .equ	BowlPinPin = PINB
@@ -68,7 +70,6 @@ main:
 	sei					; Enable global interupts.
 
 main_loop:
-	; Bowling ball leds = [PD3, PD4, PD5]
 	call	update_ball_position
 
 	rjmp main_loop
@@ -77,10 +78,34 @@ main_loop:
 
 shoot_ball:
 	call wait_1_sec
+	in	r21, BowlingBallPin		; For manipulation later.
 
 	; Update bowling pins.
+	sbic	BowlingBallPin, BowlingBallMid	; Skip if second position is not set.
+	rjmp	clear_all
+
+	sbis	BowlingBallPin, BowlingBallEnd	; Skip if last position is not set.
+	rjmp	clear_right
+
+clear_left:
+	cbi	BowlPinPort, BowlPinLeft			; Clear left pin
+
+	rjmp	shoot_ball_ret
+
+clear_right:
+	cbi	BowlPinPort, BowlPinRight		; Clear right pin
+
+	rjmp shoot_ball_ret
+
+clear_all:
+	cbi	BowlPinPort, BowlPinLeft			; Clear left pin
+	cbi	BowlPinPort, BowlPinRight		; Clear right pin
+	cbi	BowlPinPort, BowlPinMid			; Clear middle pin
+
+
 
 shoot_ball_ret:
+	call	wait_1_sec
 	reti
 
 
@@ -112,7 +137,7 @@ update_ball_position_timer_loop:
 	sbi	tifr1, tov1			; Clear flag.
 
 	in	r16, BowlingBallPin		; Read in what leds are on.
-	andi	r16, (1<<PD3)|(1<<PD4)|(1<<PD5)		; Mask for led registers.
+	andi	r16, BowlingBallMsk		; Mask for led registers.
 
 	lsl	r16					; Move to next led. (shifts bits to the left)
 	ldi	r17, (1<<BowlingBallEnd)	; Register of last led.
@@ -137,6 +162,11 @@ update_ball_position_ret:
 
 
 wait_1_sec:
+	; Clear old timer
+	clr	r20
+	sts	tccr1b, r20			; Stop timer
+	sbi	tifr1, tov1			; Clear flag.
+
 	; Init timer delay.
 	ldi	r20, 0x0B				; For 1000ms timer.
 	sts	TCNT1H, r20

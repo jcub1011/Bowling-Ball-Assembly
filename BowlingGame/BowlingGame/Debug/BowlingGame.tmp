@@ -22,16 +22,19 @@
   <FILE>BowlingGame.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <main><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>38</LINE></main>
-  <shoot_ball><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>78</LINE></shoot_ball>
-  <main_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>70</LINE></main_loop>
-  <update_ball_position><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>89</LINE></update_ball_position>
-  <wait_1_sec><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>137</LINE></wait_1_sec>
-  <shoot_ball_ret><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>81</LINE></shoot_ball_ret>
-  <update_ball_position_timer_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>104</LINE></update_ball_position_timer_loop>
-  <reset_count_skip><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>129</LINE></reset_count_skip>
-  <reset_count><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>123</LINE></reset_count>
-  <update_ball_position_ret><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>133</LINE></update_ball_position_ret>
-  <wait_1_sec_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>153</LINE></wait_1_sec_loop>
+  <main><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>40</LINE></main>
+  <shoot_ball><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>79</LINE></shoot_ball>
+  <main_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>72</LINE></main_loop>
+  <update_ball_position><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>116</LINE></update_ball_position>
+  <wait_1_sec><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>164</LINE></wait_1_sec>
+  <clear_all><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>100</LINE></clear_all>
+  <clear_right><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>95</LINE></clear_right>
+  <clear_left><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>90</LINE></clear_left>
+  <shoot_ball_ret><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>107</LINE></shoot_ball_ret>
+  <update_ball_position_timer_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>131</LINE></update_ball_position_timer_loop>
+  <reset_count_skip><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>156</LINE></reset_count_skip>
+  <reset_count><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>150</LINE></reset_count>
+  <update_ball_position_ret><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>160</LINE></update_ball_position_ret>
+  <wait_1_sec_loop><FILE>C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm</FILE><LINE>185</LINE></wait_1_sec_loop>
  </LABELS>
 </ASSEMBLER_INFO>

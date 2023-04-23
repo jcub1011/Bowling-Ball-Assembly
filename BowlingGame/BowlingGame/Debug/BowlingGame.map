@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm Sun Apr 23 14:16:51 2023
+AVRASM ver. 2.2.8  C:\Users\jcubm\OneDrive - Florida Gulf Coast University\School\Year 2\Spring\CDA 3104\BowlingGame\BowlingGame\main.asm Sun Apr 23 14:49:46 2023
 
 
 EQU  SIGNATURE_000 0000001e
@@ -703,7 +703,9 @@ EQU  BowlingBallPort 0000000b
 EQU  BowlingBallPin 00000009
 EQU  BowlingBallData 0000000a
 EQU  BowlingBallStart 00000003
+EQU  BowlingBallMid 00000004
 EQU  BowlingBallEnd 00000005
+EQU  BowlingBallMsk 00000038
 EQU  BowlPinData  00000004
 EQU  BowlPinPin   00000003
 EQU  BowlPinPort  00000005
@@ -713,11 +715,14 @@ EQU  BowlPinMid   00000003
 CSEG main         00000034
 CSEG shoot_ball   0000004d
 CSEG main_loop    0000004a
-CSEG update_ball_position 00000050
-CSEG wait_1_sec   00000070
-CSEG shoot_ball_ret 0000004f
-CSEG update_ball_position_timer_loop 0000005c
-CSEG reset_count_skip 0000006d
-CSEG reset_count  00000069
-CSEG update_ball_position_ret 0000006f
-CSEG wait_1_sec_loop 0000007c
+CSEG update_ball_position 0000005e
+CSEG wait_1_sec   0000007e
+CSEG clear_all    00000058
+CSEG clear_right  00000056
+CSEG clear_left   00000054
+CSEG shoot_ball_ret 0000005b
+CSEG update_ball_position_timer_loop 0000006a
+CSEG reset_count_skip 0000007b
+CSEG reset_count  00000077
+CSEG update_ball_position_ret 0000007d
+CSEG wait_1_sec_loop 0000008e
